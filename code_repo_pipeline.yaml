@@ -1,0 +1,56 @@
+pipeline:
+  projectIdentifier: devx_ai_1
+  orgIdentifier: sandbox
+  tags: {}
+  stages:
+    - stage:
+        name: Analyse
+        identifier: test
+        description: ""
+        type: CI
+        spec:
+          cloneCodebase: false
+          caching:
+            enabled: true
+            override: false
+            paths: []
+          buildIntelligence:
+            enabled: true
+          platform:
+            os: Linux
+            arch: Amd64
+          runtime:
+            type: Cloud
+            spec: {}
+          execution:
+            steps:
+              - step:
+                  type: GitClone
+                  name: GitClone_1
+                  identifier: GitClone_1
+                  spec:
+                    connectorRef: gh_app2
+                    repoName: fme-workshop-springboot
+                    build:
+                      type: branch
+                      spec:
+                        branch: main
+              - step:
+                  type: Agent
+                  name: Agent
+                  identifier: Agent_1
+                  spec:
+                    agentName: ca_code_repo_analyser
+                    agentSettings:
+                      llmConnector: OpenAI
+                      mcpConnectors:
+                        - Harness_MCP_server
+              - step:
+                  type: Run
+                  name: Run_1
+                  identifier: Run_1
+                  spec:
+                    shell: Sh
+                    command: cat /harness/agent/output/report.json
+  identifier: Code_Repo_Analyser
+  name: Code Repo Analyser
